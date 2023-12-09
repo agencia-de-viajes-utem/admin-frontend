@@ -24,7 +24,7 @@ function HabitacionDetail({
         onGuardarCambios(editedHabitacionDetalle);
     };
 
-    console.log(habitacionDetalle)
+    //console.log(habitacionDetalle)
     return (
 
         <>

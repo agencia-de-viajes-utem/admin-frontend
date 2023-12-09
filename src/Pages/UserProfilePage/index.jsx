@@ -4,7 +4,7 @@ import Spinner from 'react-bootstrap/Spinner';
 const UserProfilePage = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
-            window.location.href = 'http://localhost:5173/profile';
+            window.location.href = `${import.meta.env.VITE_FRONT_USUARIOS}/profile`;
         }, 500);
 
         return () => clearTimeout(timer); // Limpia el timer si el componente se desmonta antes

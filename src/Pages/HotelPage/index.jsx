@@ -51,7 +51,7 @@ const HotelPage = () => {
     };
 
     const handleSaveHotel = async (hotelData) => {
-        console.log(hotelData);
+        //console.log(hotelData);
         try {
             if (hotelData.ID) {
                 // Actualizar el hotel existente
