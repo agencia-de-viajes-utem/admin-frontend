@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Table, Button, Card, Modal } from 'react-bootstrap';
+import { Table, Button, Card, Modal, Spinner } from 'react-bootstrap';
 import { FiEdit, FiTrash2, FiPlus } from 'react-icons/fi';
 
-const FechaPaqueteTable = ({ fechasPaquete, onEdit, onDelete, onAdd }) => {
+const FechaPaqueteTable = ({ fechasPaquete, onEdit, onDelete, onAdd, loading }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedFechaPaquete, setSelectedFechaPaquete] = useState(null);
 
@@ -39,41 +39,44 @@ const FechaPaqueteTable = ({ fechasPaquete, onEdit, onDelete, onAdd }) => {
                 <Button variant="primary" onClick={onAdd} className="mb-3">
                     <FiPlus /> Agregar Fecha de Paquete
                 </Button>
-                <Table striped bordered hover responsive>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Fecha Inicial</th>
-                            <th>Fecha Final</th>
-                            <th>Precio de Oferta</th>
-                            <th>ID Paquete</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {fechasPaquete.map((fechaPaquete) => (
-                            <tr key={fechaPaquete.ID}>
-                                <td>{fechaPaquete.ID}</td>
-                                <td>{fechaPaquete.Nombre}</td>
-                                <td>{fechaPaquete.FechaInicial}</td>
-                                <td>{fechaPaquete.FechaFinal}</td>
-                                <td>{fechaPaquete.PrecioOferta}</td>
-                                <td>{fechaPaquete.IDPaquete}</td>
-                                <td>
-                                    <div className="d-flex gap-2">
-                                        <Button variant="info" onClick={() => onEdit(fechaPaquete)}>
-                                            <FiEdit />
-                                        </Button>
-                                        <Button variant="danger" onClick={() => handleDeleteClick(fechaPaquete)}>
-                                            <FiTrash2 />
-                                        </Button>
-                                    </div>
-                                </td>
+                {loading ? (
+                    <div className="text-center">
+                        <Spinner
+                            animation="border"
+                            role="status"
+                        />
+                    </div>
+                ) : (
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Fecha</th>
+                                {/* Otras columnas de la tabla de fechas de paquete */}
+                                <th>Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {fechasPaquete.map((fechaPaquete) => (
+                                <tr key={fechaPaquete.ID}>
+                                    <td>{fechaPaquete.ID}</td>
+                                    <td>{fechaPaquete.Fecha}</td>
+                                    {/* Otras celdas de la tabla de fechas de paquete */}
+                                    <td>
+                                        <div className="d-flex gap-2">
+                                            <Button variant="info" onClick={() => onEdit(fechaPaquete)}>
+                                                <FiEdit />
+                                            </Button>
+                                            <Button variant="danger" onClick={() => handleDeleteClick(fechaPaquete)} className="ml-2">
+                                                <FiTrash2 />
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                )}
             </Card.Body>
         </Card>
     );

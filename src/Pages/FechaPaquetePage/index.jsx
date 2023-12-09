@@ -15,6 +15,7 @@ const FechaPaquetePage = () => {
     const [paquetes, setPaquetes] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentFechaPaquete, setCurrentFechaPaquete] = useState(null);
+    const [loading, setLoading] = useState(true); // Nuevo estado para indicar si los datos están cargando
     const navigate = useNavigate();
 
     const handleGoBack = () => {
@@ -27,18 +28,22 @@ const FechaPaquetePage = () => {
             ObtenerFechasPaquete(token)
                 .then((resFechasPaquete) => {
                     setFechasPaquete(resFechasPaquete);
+                    setLoading(false);
                 })
                 .catch((err) => {
                     console.log('Error al obtener fechas de paquete:', err);
+                    setLoading(false);
                 });
 
             // Obtener los paquetes
             ObtenerPaquetes(token)
                 .then((resPaquetes) => {
                     setPaquetes(resPaquetes);
+                    setLoading(false);
                 })
                 .catch((err) => {
                     console.log('Error al obtener paquetes:', err);
+                    setLoading(false);
                 });
 
         }
@@ -98,6 +103,7 @@ const FechaPaquetePage = () => {
                 onEdit={handleShowModal}
                 onDelete={handleDeleteFechaPaquete}
                 onAdd={() => handleShowModal(null)}
+                loading={loading}
             />
             <FechaPaqueteModal
                 show={showModal}

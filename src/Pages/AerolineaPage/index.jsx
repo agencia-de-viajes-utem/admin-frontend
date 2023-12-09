@@ -16,6 +16,7 @@ const AerolineaPage = () => {
     const [aeropuertos, setAeropuertos] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentAerolinea, setCurrentAerolinea] = useState(null);
+    const [loading, setLoading] = useState(true); // Nuevo estado para indicar si los datos están cargando
     const navigate = useNavigate();
 
     const handleGoBack = () => {
@@ -27,8 +28,10 @@ const AerolineaPage = () => {
             // Obtener las aerolíneas
             ObtenerAerolineas(token).then((resAerolineas) => {
                 setAerolineas(resAerolineas);
+                setLoading(false);
             }).catch((err) => {
                 console.log('Error al obtener aerolíneas:', err);
+                setLoading(false);
             });
 
             // Obtener los aeropuertos
@@ -92,6 +95,7 @@ const AerolineaPage = () => {
                 onEdit={handleShowModal}
                 onDelete={handleDeleteAerolinea}
                 onAdd={() => setShowModal(true)}
+                loading={loading}
             />
             <AerolineaModal
                 show={showModal}

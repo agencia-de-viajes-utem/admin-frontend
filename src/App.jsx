@@ -12,6 +12,7 @@ import HabitacionPage from './Pages/HabitacionPage';
 import HabitacionDetallePage from './Pages/HabitacionPage/HabitacionDetallePage';
 import HabitacionCrearPage from './Pages/HabitacionPage/HabitacionCrearPage';
 import PaquetePage from './Pages/PaquetePage';
+import CrearPaquetePage from './Pages/PaquetePage/CrearPaquetePage';
 import FechaPaquetePage from './Pages/FechaPaquetePage';
 
 
@@ -31,6 +32,8 @@ const AuthenticatedHabitacionPage = withAuth(HabitacionPage, loginURL);
 const AuthenticatedHabitacionDetallePage = withAuth(HabitacionDetallePage, loginURL);
 const AuthenticatedHabitacionCrearPage = withAuth(HabitacionCrearPage, loginURL);
 const AuthenticatedPaquetePage = withAuth(PaquetePage, loginURL);
+const AuthenticatedCrearPaquetePage = withAuth(CrearPaquetePage, loginURL);
+
 const AuthenticatedFechaPaquetePage = withAuth(FechaPaquetePage, loginURL)
 //const AuthenticatedPaqueteDetallePage = withAuth(PaqueteDetallePage, loginURL);
 
@@ -53,6 +56,7 @@ const App = () => {
         <Route path="/habitaciones/:id" element={<AuthenticatedHabitacionDetallePage />} />
         <Route path="/habitaciones/hotel/:id" element={<AuthenticatedHabitacionCrearPage />} />
         <Route path="/paquetes" element={<AuthenticatedPaquetePage />} />
+        <Route path="/paquetes/crear" element={<AuthenticatedCrearPaquetePage />} />
         <Route path="/fechas_paquete" element={<AuthenticatedFechaPaquetePage />} />
 
 

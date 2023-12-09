@@ -6,7 +6,7 @@
 }
 
 .card-ocupada {
-    background-color: #ffcccc;
+    background-color: #ffcccc !important;
     /* Un rojo claro, ajusta el color según tus preferencias */
 }
 

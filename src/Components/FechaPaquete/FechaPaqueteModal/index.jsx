@@ -43,7 +43,7 @@ const FechaPaqueteModal = ({ show, onHide, fechaPaquete, onSave, paquetes }) => 
         onHide();
     };
 
-    //console.log(paquetes)
+    console.log(paquetes)
     return (
         <Modal show={show} onHide={onHide} centered>
             <Card className="shadow">

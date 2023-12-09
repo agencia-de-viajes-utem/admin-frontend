@@ -16,6 +16,7 @@ const CiudadPage = () => {
     const [paises, setPaises] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentCiudad, setCurrentCiudad] = useState(null);
+    const [loading, setLoading] = useState(true); // Nuevo estado para indicar si los datos están cargando
     const navigate = useNavigate();
 
     const handleGoBack = () => {
@@ -27,15 +28,19 @@ const CiudadPage = () => {
             // Obtener las ciudades
             ObtenerCiudades(token).then((resCiudades) => {
                 setCiudades(resCiudades);
+                setLoading(false);
             }).catch((err) => {
                 console.log('Error al obtener ciudades:', err);
+                setLoading(false);
             });
 
             // Obtener los países
             ObtenerPaises(token).then((resPaises) => {
                 setPaises(resPaises);
+                setLoading(false);
             }).catch((err) => {
                 console.log('Error al obtener países:', err);
+                setLoading(false);
             });
         }
     }, [token]);
@@ -94,6 +99,7 @@ const CiudadPage = () => {
                 onEdit={handleShowModal}
                 onDelete={handleDeleteCiudad}
                 onAdd={() => handleShowModal(null)}
+                loading={loading}
             />
             <CiudadModal
                 show={showModal}

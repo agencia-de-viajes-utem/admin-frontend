@@ -15,6 +15,7 @@ const TipoHabitacionPage = () => {
     const [tiposHabitacion, setTiposHabitacion] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentTipoHabitacion, setCurrentTipoHabitacion] = useState(null);
+    const [loading, setLoading] = useState(true); // Nuevo estado para indicar si los datos están cargando
     const navigate = useNavigate();
 
     const handleGoBack = () => {
@@ -26,8 +27,10 @@ const TipoHabitacionPage = () => {
             // Obtener los tipos de habitación
             ObtenerTipoHabitacion(token).then((resTiposHabitacion) => {
                 setTiposHabitacion(resTiposHabitacion);
+                setLoading(false);
             }).catch((err) => {
                 console.log('Error al obtener tipos de habitación:', err);
+                setLoading(false);
             });
         }
     }, [token]);
@@ -86,6 +89,7 @@ const TipoHabitacionPage = () => {
                 onEdit={handleShowModal}
                 onDelete={handleDeleteTipoHabitacion}
                 onAdd={() => handleShowModal(null)}
+                loading={loading}
             />
             <TipoHabitacionModal
                 show={showModal}

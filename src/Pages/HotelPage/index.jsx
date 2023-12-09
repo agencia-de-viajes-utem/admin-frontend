@@ -16,6 +16,7 @@ const HotelPage = () => {
     const [ciudades, setCiudades] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentHotel, setCurrentHotel] = useState(null);
+    const [loading, setLoading] = useState(true); // Nuevo estado para indicar si los datos están cargando
     const navigate = useNavigate();
 
     const handleGoBack = () => {
@@ -27,15 +28,19 @@ const HotelPage = () => {
             // Obtener los hoteles
             ObtenerHoteles(token).then((resHoteles) => {
                 setHoteles(resHoteles);
+                setLoading(false);
             }).catch((err) => {
                 console.log('Error al obtener hoteles:', err);
+                setLoading(false);
             });
 
             // Obtener las ciudades
             ObtenerCiudades(token).then((resCiudades) => {
                 setCiudades(resCiudades);
+                setLoading(false);
             }).catch((err) => {
                 console.log('Error al obtener ciudades:', err);
+                setLoading(false);
             });
         }
     }, [token]);
@@ -51,7 +56,7 @@ const HotelPage = () => {
     };
 
     const handleSaveHotel = async (hotelData) => {
-        //console.log(hotelData);
+        console.log(hotelData);
         try {
             if (hotelData.ID) {
                 // Actualizar el hotel existente
@@ -92,6 +97,7 @@ const HotelPage = () => {
                 onEdit={handleShowModal}
                 onDelete={handleDeleteHotel}
                 onAdd={() => setShowModal(true)}
+                loading={loading}
             />
             <HotelModal
                 show={showModal}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { Container, Button, Spinner } from 'react-bootstrap'; // Asegúrate de importar Spinner de react-bootstrap
 import PaisTable from '../../Components/Pais/PaisTable';
 import PaisModal from '../../Components/Pais/PaisModal';
 import Cookies from 'js-cookie';
@@ -9,12 +9,12 @@ import { FiArrowLeft } from 'react-icons/fi';
 
 import { ObtenerPaises, crearPais, actualizarPais, eliminarPais } from '../../api/index';
 
-
 const PaisPage = () => {
     const [token, setToken] = useState(Cookies.get('token'));
     const [paises, setPaises] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [currentPais, setCurrentPais] = useState(null);
+    const [loading, setLoading] = useState(true); // Nuevo estado para indicar si los datos están cargando
     const navigate = useNavigate();
 
     const handleGoBack = () => {
@@ -23,13 +23,17 @@ const PaisPage = () => {
 
     useEffect(() => {
         if (token) {
-            ObtenerPaises(token).then((res) => {
-                setPaises(res);
-            }).catch((err) => {
-                console.log(err);
-            });
+            ObtenerPaises(token)
+                .then((res) => {
+                    setPaises(res);
+                    setLoading(false); // Marcar como cargado una vez que los datos se han recuperado
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setLoading(false); // Marcar como cargado en caso de error
+                });
         }
-    }, []);
+    }, [token]); // Agregar token como dependencia para que se ejecute el efecto cuando cambie el token
 
     const handleShowModal = (pais) => {
         setCurrentPais(pais);
@@ -87,10 +91,17 @@ const PaisPage = () => {
                 </Button>
             </div>
             <hr />
-            <PaisTable paises={paises} onEdit={handleShowModal} onDelete={handleDeletePais} onAdd={() => handleShowModal(null)} />
+            <PaisTable
+                paises={paises}
+                onEdit={handleShowModal}
+                onDelete={handleDeletePais}
+                onAdd={() => handleShowModal(null)}
+                loading={loading}
+            />
             <PaisModal show={showModal} onHide={handleCloseModal} pais={currentPais} onSave={handleSavePais} />
         </Container>
     );
+
 };
 
 export default PaisPage;

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Table, Button, Card, Modal } from 'react-bootstrap';
+import { Table, Button, Card, Modal, Spinner } from 'react-bootstrap';
 import { FiEdit, FiTrash2, FiPlus } from 'react-icons/fi';
 
-
-const AerolineaTable = ({ aerolineas, onEdit, onDelete, onAdd }) => {
+const AerolineaTable = ({ aerolineas, onEdit, onDelete, onAdd, loading }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedAerolinea, setSelectedAerolinea] = useState(null);
 
@@ -38,47 +37,46 @@ const AerolineaTable = ({ aerolineas, onEdit, onDelete, onAdd }) => {
             <Card.Body>
                 <Card.Title>Lista de Aerolíneas</Card.Title>
                 <Button variant="primary" onClick={onAdd} className="mb-3">
-                    <FiPlus />
-                    Agregar Aerolínea
+                    <FiPlus /> Agregar Aerolínea
                 </Button>
-                <Table striped bordered hover responsive>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Aeropuertos Vinculados</th> {/* Nueva columna */}
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {aerolineas.map(aerolinea => (
-                            <tr key={aerolinea.ID}>
-                                <td>{aerolinea.ID}</td>
-                                <td>{aerolinea.Nombre}</td>
-                                <td>
-                                    {/* Mostrar los nombres de los aeropuertos vinculados */}
-                                    <ul>
-                                        {aerolinea.Aeropuertos.map(aeropuerto => (
-                                            <li key={aeropuerto.ID}>
-                                                {aeropuerto.Nombre}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </td>
-                                <td>
-                                    <div className="d-flex gap-2">
-                                        <Button variant="info" onClick={() => onEdit(aerolinea)}>
-                                            <FiEdit />
-                                        </Button>
-                                        <Button variant="danger" onClick={() => handleDeleteClick(aerolinea)}>
-                                            <FiTrash2 />
-                                        </Button>
-                                    </div>
-                                </td>
+                {loading ? (
+                    <div className="text-center">
+                        <Spinner
+                            animation="border"
+                            role="status"
+                        />
+                    </div>
+                ) : (
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                {/* Otras columnas de la tabla de aerolíneas */}
+                                <th>Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {aerolineas.map((aerolinea) => (
+                                <tr key={aerolinea.ID}>
+                                    <td>{aerolinea.ID}</td>
+                                    <td>{aerolinea.Nombre}</td>
+                                    {/* Otras celdas de la tabla de aerolíneas */}
+                                    <td>
+                                        <div className="d-flex gap-2">
+                                            <Button variant="info" onClick={() => onEdit(aerolinea)}>
+                                                <FiEdit />
+                                            </Button>
+                                            <Button variant="danger" onClick={() => handleDeleteClick(aerolinea)} className="ml-2">
+                                                <FiTrash2 />
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                )}
             </Card.Body>
         </Card>
     );

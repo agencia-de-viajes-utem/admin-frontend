@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Table, Button, Card, Modal } from 'react-bootstrap';
+import { Table, Button, Card, Modal, Spinner } from 'react-bootstrap';
 import { FiEdit, FiTrash2, FiPlus } from 'react-icons/fi';
 
-const AeropuertoTable = ({ aeropuertos, onEdit, onDelete, onAdd }) => {
+const AeropuertoTable = ({ aeropuertos, onEdit, onDelete, onAdd, loading }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedAeropuerto, setSelectedAeropuerto] = useState(null);
 
@@ -39,35 +39,44 @@ const AeropuertoTable = ({ aeropuertos, onEdit, onDelete, onAdd }) => {
                 <Button variant="primary" onClick={onAdd} className="mb-3">
                     <FiPlus /> Agregar Aeropuerto
                 </Button>
-                <Table striped bordered hover responsive>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Ciudad</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {aeropuertos.map(aeropuerto => (
-                            <tr key={aeropuerto.ID}>
-                                <td>{aeropuerto.ID}</td>
-                                <td>{aeropuerto.Nombre}</td>
-                                <td>{aeropuerto.Ciudad.Nombre}, {aeropuerto.Ciudad.Pais.Nombre}</td>
-                                <td>
-                                    <div className="d-flex gap-2">
-                                        <Button variant="info" onClick={() => onEdit(aeropuerto)}>
-                                            <FiEdit />
-                                        </Button>
-                                        <Button variant="danger" onClick={() => handleDeleteClick(aeropuerto)}>
-                                            <FiTrash2 />
-                                        </Button>
-                                    </div>
-                                </td>
+                {loading ? (
+                    <div className="text-center">
+                        <Spinner
+                            animation="border"
+                            role="status"
+                        />
+                    </div>
+                ) : (
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                {/* Otras columnas de la tabla de aeropuertos */}
+                                <th>Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {aeropuertos.map((aeropuerto) => (
+                                <tr key={aeropuerto.ID}>
+                                    <td>{aeropuerto.ID}</td>
+                                    <td>{aeropuerto.Nombre}</td>
+                                    {/* Otras celdas de la tabla de aeropuertos */}
+                                    <td>
+                                        <div className="d-flex gap-2">
+                                            <Button variant="info" onClick={() => onEdit(aeropuerto)}>
+                                                <FiEdit />
+                                            </Button>
+                                            <Button variant="danger" onClick={() => handleDeleteClick(aeropuerto)} className="ml-2">
+                                                <FiTrash2 />
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                )}
             </Card.Body>
         </Card>
     );

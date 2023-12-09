@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { Table, Button, Card, Modal } from 'react-bootstrap';
+import { Table, Button, Card, Modal, Spinner } from 'react-bootstrap';
 import { FiEdit, FiTrash2, FiPlus } from 'react-icons/fi';
 
-
-
-const PaisTable = ({ paises, onEdit, onDelete, onAdd }) => {
+const PaisTable = ({ paises, onEdit, onDelete, onAdd, loading }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedPais, setSelectedPais] = useState(null);
 
@@ -37,41 +35,49 @@ const PaisTable = ({ paises, onEdit, onDelete, onAdd }) => {
     return (
         <Card className="shadow-sm p-3 mb-5 bg-white rounded">
             {deleteModal}
-
             <Card.Body>
                 <Card.Title>Lista de Países</Card.Title>
                 <Button variant="primary" onClick={onAdd} className="mb-3">
                     <FiPlus /> Agregar País
                 </Button>
-                <Table striped bordered hover responsive>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Codigo</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paises.map((pais) => (
-                            <tr key={pais.ID}>
-                                <td>{pais.ID}</td>
-                                <td>{pais.Nombre}</td>
-                                <td>{pais.CodigoPais}</td>
-                                <td>
-                                    <div className="d-flex gap-2">
-                                        <Button variant="info" onClick={() => onEdit(pais)}>
-                                            <FiEdit />
-                                        </Button>
-                                        <Button variant="danger" onClick={() => handleDeleteClick(pais)} className="ml-2">
-                                            <FiTrash2 />
-                                        </Button>
-                                    </div>
-                                </td>
+                {loading ? (
+                    <div className="text-center">
+                        <Spinner
+                            animation="border"
+                            role="status"
+                        />
+                    </div>
+                ) : (
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Codigo</th>
+                                <th>Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {paises.map((pais) => (
+                                <tr key={pais.ID}>
+                                    <td>{pais.ID}</td>
+                                    <td>{pais.Nombre}</td>
+                                    <td>{pais.CodigoPais}</td>
+                                    <td>
+                                        <div className="d-flex gap-2">
+                                            <Button variant="info" onClick={() => onEdit(pais)}>
+                                                <FiEdit />
+                                            </Button>
+                                            <Button variant="danger" onClick={() => handleDeleteClick(pais)} className="ml-2">
+                                                <FiTrash2 />
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                )}
             </Card.Body>
         </Card>
     );

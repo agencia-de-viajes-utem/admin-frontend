@@ -1,74 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import PaqueteTable from '../../Components/Paquete/PaqueteTable';
-import PaqueteModal from '../../Components/Paquete/PaqueteModal';
 import Cookies from 'js-cookie';
-
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 
-import { ObtenerPaquetes, crearPaquete, actualizarPaquete, eliminarPaquete } from '../../api/index';
+import { ObtenerPaquetes, actualizarPaquete, eliminarPaquete } from '../../api/index';
 
 const PaquetePage = () => {
     const [token, setToken] = useState(Cookies.get('token'));
     const [paquetes, setPaquetes] = useState([]);
-    const [showModal, setShowModal] = useState(false);
-    const [currentPaquete, setCurrentPaquete] = useState(null);
     const navigate = useNavigate();
-
-    const handleGoBack = () => {
-        navigate('/');
-    };
+    const [loading, setLoading] = useState(true); // Nuevo estado para indicar si los datos están cargando
 
     useEffect(() => {
         if (token) {
             ObtenerPaquetes(token).then((res) => {
                 setPaquetes(res);
+                setLoading(false);
             }).catch((err) => {
                 console.error(err);
+                setLoading(false);
             });
         }
     }, [token]);
 
-    const handleShowModal = (paquete) => {
-        setCurrentPaquete(paquete);
-        setShowModal(true);
+    const handleGoBack = () => {
+        navigate('/');
     };
 
-    const handleCloseModal = () => {
-        setShowModal(false);
-        setCurrentPaquete(null);
+    const handleShowCrearPaquete = () => {
+        navigate('/paquetes/crear'); // Nueva ruta para crear paquete
     };
 
-    const handleSavePaquete = async (paqueteData) => {
-        try {
-            let response;
-            if (paqueteData.ID) {
-                // Actualizar el paquete existente
-                response = await actualizarPaquete(token, paqueteData);
-            } else {
-                // Crear un nuevo paquete
-                response = await crearPaquete(token, paqueteData);
-            }
-
-            if (response) {
-                console.log('Paquete creado/actualizado exitosamente:', response);
-                window.location.reload(); // Recargar la página
-            }
-        } catch (error) {
-            console.error('Error al guardar el paquete:', error);
-        } finally {
-            // Cerrar el modal y limpiar el estado de currentPaquete después de guardar
-            handleCloseModal();
-        }
+    const handleEditPaquete = (paquete) => {
+        // Aquí puedes manejar la edición de un paquete, 
+        // posiblemente redirigiendo a una ruta de edición
+        // Por ejemplo: navigate(`/paquetes/editar/${paquete.ID}`);
     };
 
     const handleDeletePaquete = async (paqueteId) => {
         try {
             await eliminarPaquete(token, paqueteId);
             console.log('Paquete eliminado exitosamente');
-
-            // Actualizar la lista de paquetes después de la eliminación
             const updatedPaquetes = paquetes.filter(paquete => paquete.ID !== paqueteId);
             setPaquetes(updatedPaquetes);
         } catch (error) {
@@ -86,8 +60,15 @@ const PaquetePage = () => {
                 </Button>
             </div>
             <hr />
-            <PaqueteTable paquetes={paquetes} onEdit={handleShowModal} onDelete={handleDeletePaquete} onAdd={() => handleShowModal(null)} />
-            <PaqueteModal show={showModal} onHide={handleCloseModal} paquete={currentPaquete} onSave={handleSavePaquete} />
+            <Button variant="primary" onClick={handleShowCrearPaquete} className='mb-4'>
+                Crear Nuevo Paquete
+            </Button>
+            <PaqueteTable
+                paquetes={paquetes}
+                onEdit={handleEditPaquete}
+                onDelete={handleDeletePaquete}
+                loading={loading}
+            />
         </Container>
     );
 };

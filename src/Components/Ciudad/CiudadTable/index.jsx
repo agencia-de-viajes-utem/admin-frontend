@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Table, Button, Card, Modal } from 'react-bootstrap';
+import { Table, Button, Card, Modal, Spinner } from 'react-bootstrap';
 import { FiEdit, FiTrash2, FiPlus } from 'react-icons/fi';
 
-const CiudadTable = ({ ciudades, onEdit, onDelete, onAdd }) => {
+const CiudadTable = ({ ciudades, onEdit, onDelete, onAdd, loading }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedCiudad, setSelectedCiudad] = useState(null);
 
@@ -39,37 +39,44 @@ const CiudadTable = ({ ciudades, onEdit, onDelete, onAdd }) => {
                 <Button variant="primary" onClick={onAdd} className="mb-3">
                     <FiPlus /> Agregar Ciudad
                 </Button>
-                <Table striped bordered hover responsive>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Ciudad</th>
-                            <th>País</th>
-                            <th>ID País</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {ciudades.map((ciudad) => (
-                            <tr key={ciudad.ID}>
-                                <td>{ciudad.ID}</td>
-                                <td>{ciudad.Nombre}</td>
-                                <td>{`${ciudad.Pais.Nombre}, ${ciudad.Pais.CodigoPais}`}</td>
-                                <td>{ciudad.IDPais}</td>
-                                <td>
-                                    <div className="d-flex gap-2">
-                                        <Button variant="info" onClick={() => onEdit(ciudad)}>
-                                            <FiEdit />
-                                        </Button>
-                                        <Button variant="danger" onClick={() => handleDeleteClick(ciudad)}>
-                                            <FiTrash2 />
-                                        </Button>
-                                    </div>
-                                </td>
+                {loading ? (
+                    <div className="text-center">
+                        <Spinner
+                            animation="border"
+                            role="status"
+                        />
+                    </div>
+                ) : (
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                {/* Otras columnas de la tabla de ciudades */}
+                                <th>Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {ciudades.map((ciudad) => (
+                                <tr key={ciudad.ID}>
+                                    <td>{ciudad.ID}</td>
+                                    <td>{ciudad.Nombre}</td>
+                                    {/* Otras celdas de la tabla de ciudades */}
+                                    <td>
+                                        <div className="d-flex gap-2">
+                                            <Button variant="info" onClick={() => onEdit(ciudad)}>
+                                                <FiEdit />
+                                            </Button>
+                                            <Button variant="danger" onClick={() => handleDeleteClick(ciudad)} className="ml-2">
+                                                <FiTrash2 />
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                )}
             </Card.Body>
         </Card>
     );

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Table, Button, Card, Modal } from 'react-bootstrap';
+import { Table, Button, Card, Modal, Spinner } from 'react-bootstrap';
 import { FiEdit, FiTrash2, FiPlus } from 'react-icons/fi';
 
-const TipoHabitacionTable = ({ tiposHabitacion, onEdit, onDelete, onAdd }) => {
+const TipoHabitacionTable = ({ tiposHabitacion, onEdit, onDelete, onAdd, loading }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedTipoHabitacion, setSelectedTipoHabitacion] = useState(null);
 
@@ -39,13 +39,21 @@ const TipoHabitacionTable = ({ tiposHabitacion, onEdit, onDelete, onAdd }) => {
                 <Button variant="primary" onClick={onAdd} className="mb-3">
                     <FiPlus /> Agregar Tipo de Habitación
                 </Button>
-                {tiposHabitacion && tiposHabitacion.length > 0 ? (
+                {loading ? (
+                    <div className="text-center">
+                        <Spinner
+                            animation="border"
+                            role="status"
+                        />
+                    </div>
+                ) : (
                     <Table striped bordered hover responsive>
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Tipo</th>
-                                <th>Capacidad</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                {/* Otras columnas de la tabla de tipos de habitación */}
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -54,13 +62,14 @@ const TipoHabitacionTable = ({ tiposHabitacion, onEdit, onDelete, onAdd }) => {
                                 <tr key={tipoHabitacion.ID}>
                                     <td>{tipoHabitacion.ID}</td>
                                     <td>{tipoHabitacion.Nombre}</td>
-                                    <td>{tipoHabitacion.Capacidad}</td>
+                                    <td>{tipoHabitacion.Descripcion}</td>
+                                    {/* Otras celdas de la tabla de tipos de habitación */}
                                     <td>
                                         <div className="d-flex gap-2">
                                             <Button variant="info" onClick={() => onEdit(tipoHabitacion)}>
                                                 <FiEdit />
                                             </Button>
-                                            <Button variant="danger" onClick={() => handleDeleteClick(tipoHabitacion)}>
+                                            <Button variant="danger" onClick={() => handleDeleteClick(tipoHabitacion)} className="ml-2">
                                                 <FiTrash2 />
                                             </Button>
                                         </div>
@@ -69,8 +78,6 @@ const TipoHabitacionTable = ({ tiposHabitacion, onEdit, onDelete, onAdd }) => {
                             ))}
                         </tbody>
                     </Table>
-                ) : (
-                    <p>No hay tipos de habitación disponibles.</p>
                 )}
             </Card.Body>
         </Card>

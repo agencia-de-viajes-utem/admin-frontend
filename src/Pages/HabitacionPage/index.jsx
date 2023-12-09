@@ -5,7 +5,8 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { FaHotel } from 'react-icons/fa';
-
+import ListaHabitaciones from '../../Components/Habitacion/ListaHabitaciones';
+import HotelList from '../../Components/Hotel/ListaHotel';
 import './styles.css';
 
 
@@ -76,18 +77,7 @@ const HabitacionesPage = () => {
             <div className="container mt-3" >
                 <div className="row">
                     <div className="col shadow-sm p-3 mb-5 bg-white rounded">
-                        <h2>Lista de Hoteles</h2>
-                        <div className="d-flex flex-wrap" >
-                            {hoteles.map((hotel) => (
-                                <div key={hotel.ID} role='button' className="d-flex align-items-center border rounded m-2 p-2 btn btn-outline-secondary" onClick={() => handleShowModal(hotel)}>
-                                    <FaHotel size={30} className="me-2" />
-                                    <div>
-                                        <div><strong>ID:</strong> {hotel.ID}</div>
-                                        <div><strong>Nombre:</strong> {hotel.Nombre}</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        <HotelList hoteles={hoteles} onHotelClick={handleShowModal} />
                     </div>
                 </div>
             </div>
@@ -107,40 +97,10 @@ const HabitacionesPage = () => {
                     </Button>
 
                     {habitaciones.length > 0 ? (
-                        <>
-                            <h3>Habitaciones:</h3>
-                            <Row>
-                                {habitaciones.map((habitacion) => (
-                                    <Col key={habitacion.ID} xs={12} sm={6} md={4} lg={3}>
-                                        <Card
-                                            className={`card-habitacion ${habitacion.ocupada ? 'card-ocupada' : ''}`}
-                                            style={{ marginBottom: '10px', cursor: 'pointer' }}
-                                            onClick={() => handleHabitacionClick(habitacion.ID)}
-                                        >
-                                            <Card.Body>
-                                                <Card.Title className='text-center'>{habitacion.ID}</Card.Title>
-                                                <Card.Text>
-                                                    {habitacion.ocupada ? (
-                                                        <>
-                                                            <div className="text-center">
-                                                                <span>Ocupada</span>
-                                                                <p> (Paquete ID: {habitacion.idPaquete})</p>
-                                                            </div>
-                                                        </>
-                                                    ) : (
-                                                        <div className="text-center">
-                                                            <span>Disponible</span>
-                                                        </div>
-                                                    )}
-                                                </Card.Text>
-                                            </Card.Body>
-                                        </Card>
-                                    </Col>
-                                ))}
-                            </Row>
-                        </>
+                        < ListaHabitaciones habitaciones={habitaciones} handleHabitacionClick={handleHabitacionClick}></ListaHabitaciones>
+
                     ) : (
-                        <p>No hay habitaciones, haga click en el botón para crear.</p>
+                        <div>No hay habitaciones, haga click en el botón para crear.</div>
                     )}
                 </Modal.Body>
 
@@ -150,9 +110,6 @@ const HabitacionesPage = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
-
-
         </Container>
     );
 };

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Table, Button, Card, Modal } from 'react-bootstrap';
-import { FiEdit, FiTrash2, FiPlus } from 'react-icons/fi';
+import { Table, Button, Card, Modal, Spinner } from 'react-bootstrap';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
 
-const PaqueteTable = ({ paquetes, onEdit, onDelete, onAdd }) => {
+const PaqueteTable = ({ paquetes, onEdit, onDelete, loading }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedPaquete, setSelectedPaquete] = useState(null);
 
@@ -37,42 +37,72 @@ const PaqueteTable = ({ paquetes, onEdit, onDelete, onAdd }) => {
 
             <Card.Body>
                 <Card.Title>Lista de Paquetes</Card.Title>
-                <Button variant="primary" onClick={onAdd} className="mb-3">
-                    <FiPlus /> Agregar Paquete
-                </Button>
-                <Table striped bordered hover responsive>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th>Precio Normal</th>
-                            <th>imagenes</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paquetes.map((paquete) => (
-                            <tr key={paquete.ID}>
-                                <td>{paquete.ID}</td>
-                                <td>{paquete.Nombre}</td>
-                                <td>{paquete.Descripcion}</td>
-                                <td>{paquete.PrecioNormal}</td>
-                                <td>{paquete.imagen}</td>
-                                <td>
-                                    <div className="d-flex gap-2">
-                                        <Button variant="info" onClick={() => onEdit(paquete)}>
-                                            <FiEdit />
-                                        </Button>
-                                        <Button variant="danger" onClick={() => handleDeleteClick(paquete)} className="ml-2">
-                                            <FiTrash2 />
-                                        </Button>
-                                    </div>
-                                </td>
+                {loading ? (
+                    <div className="text-center">
+                        <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Cargando...</span>
+                        </Spinner>
+                    </div>
+                ) : (
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Precio Normal</th>
+                                <th>Imágenes</th>
+                                <th>Origen</th>
+                                <th>Destino</th>
+                                <th>Hotel</th>
+                                <th> Habitaciones </th>
+                                <th> Capacidad Total</th>
+                                <th>Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {paquetes.map((paquete) => (
+                                <tr key={paquete.ID}>
+                                    <td>{paquete.ID}</td>
+                                    <td>{paquete.Nombre}</td>
+                                    <td>{paquete.Descripcion}</td>
+                                    <td>{paquete.PrecioNormal}</td>
+                                    <td>
+                                        <ul>
+                                            {paquete.Imagenes.map((imagen, index) => (
+                                                <li key={index}>
+                                                    <img src={imagen} alt={`Imagen ${index}`} />
+                                                </li>
+                                            ))}
+                                        </ul>                                    </td>
+                                    <td>{paquete.Origen.Nombre}</td>
+                                    <td>{paquete.Destino.Nombre}</td>
+                                    <td>{paquete?.Hotel?.Nombre || 'No especificado'}</td>
+                                    <td>
+                                        {paquete.Habitaciones ?
+                                            paquete.Habitaciones.map(habitacion => habitacion.ID).join(', ') :
+                                            'No especificado'}
+                                    </td>
+                                    <td>
+                                        {paquete.Habitaciones ?
+                                            paquete.Habitaciones.reduce((total, habitacion) => total + habitacion.TipoHabitacion.Capacidad, 0) :
+                                            0}
+                                    </td>
+                                    <td>
+                                        <div className="d-flex gap-2">
+                                            <Button variant="info" onClick={() => onEdit(paquete)}>
+                                                <FiEdit />
+                                            </Button>
+                                            <Button variant="danger" onClick={() => handleDeleteClick(paquete)} className="ml-2">
+                                                <FiTrash2 />
+                                            </Button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                )}
             </Card.Body>
         </Card>
     );
