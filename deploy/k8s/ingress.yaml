@@ -9,7 +9,7 @@ metadata:
     acme.cert-manager.io/http01-edit-in-place: "true"
 spec: 
   rules:
-  - host: admin.lumonidy.studio
+  - host: admin.lumonidy.studio 
     http:
       paths:
       - backend:
