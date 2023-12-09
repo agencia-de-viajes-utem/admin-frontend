@@ -13,6 +13,8 @@ RUN npm install
 # Step 5: Copy the rest of your application code
 COPY . .
 
+# # Step 6: Expose the port your app runs on
+# EXPOSE 3001 TODO: NOT NEEDED
 
 # Step 7: Define the command to run your app
 CMD ["npm", "run", "dev"]
