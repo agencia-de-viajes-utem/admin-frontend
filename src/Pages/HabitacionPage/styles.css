@@ -1,0 +1,22 @@
+.card-habitacion {
+    height: 125px;
+    /* Ajusta el alto según tus necesidades */
+    width: 100%;
+    /* Asegura que ocupe todo el ancho disponible en su columna */
+}
+
+.card-ocupada {
+    background-color: #ffcccc !important;
+    /* Un rojo claro, ajusta el color según tus preferencias */
+}
+
+.card-habitacion:not(.card-ocupada) {
+    background-color: #ccffcc;
+    /* Un verde claro, ajusta el color según tus preferencias */
+}
+
+.seleccionada {
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5) !important;
+    /* Sombra azul claro */
+    /* Otros estilos si son necesarios */
+}

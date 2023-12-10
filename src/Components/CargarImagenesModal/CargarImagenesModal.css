@@ -1,0 +1,25 @@
+/* CargarImagenesModal.css */
+
+.image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    /* Espacio entre las imágenes */
+    margin-bottom: 15px;
+    /* Espacio debajo del contenedor de imágenes */
+}
+
+.image-preview {
+    width: 100px;
+    /* Ancho fijo para las imágenes previsualizadas */
+    height: 100px;
+    /* Altura fija para las imágenes previsualizadas */
+    object-fit: cover;
+    /* Asegura que las imágenes se recorten para ajustarse al tamaño */
+    border: 1px solid #ddd;
+    /* Borde ligero para las imágenes */
+    border-radius: 4px;
+    /* Bordes redondeados */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Sombra ligera para resaltar las imágenes */
+}

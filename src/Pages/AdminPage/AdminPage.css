@@ -1,0 +1,40 @@
+header {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+h1 {
+    color: #333;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.profile-icon {
+    color: #007bff;
+    /* Color del ícono */
+    margin-left: 10px;
+    /* Espaciado entre el texto y el ícono */
+    vertical-align: middle;
+    /* Alineación vertical con el texto */
+}
+
+main {
+    margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    header {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+}
