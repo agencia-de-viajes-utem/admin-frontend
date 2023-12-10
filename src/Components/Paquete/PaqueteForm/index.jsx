@@ -2,10 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Form, Card } from 'react-bootstrap';
 import Select from 'react-select';
+import Cookies from 'js-cookie';
 
 import CargarImagenesModal from '../../CargarImagenesModal';
 
 const PaqueteForm = ({ onSubmit, initialValues, aeropuertosOptions }) => {
+    const token = Cookies.get('token');
     const [nombre, setNombre] = useState(initialValues.Nombre || '');
     const [descripcion, setDescripcion] = useState(initialValues.Descripcion || '');
     const [precioNormal, setPrecioNormal] = useState(initialValues.PrecioNormal || 0);
@@ -15,11 +17,35 @@ const PaqueteForm = ({ onSubmit, initialValues, aeropuertosOptions }) => {
 
     const [showModal, setShowModal] = useState(false);
 
-    const handleUploadImages = (files, fileNames) => {
-        console.log(files, fileNames)
-        // Actualiza el estado de 'imagenes' con los nombres de los archivos de las imágenes
-        setImagenes(fileNames);
-        setShowModal(false); // Cierra el modal después de la carga
+
+
+    const handleUploadImages = async (files, fileNames) => {
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const formData = new FormData();
+            formData.append("file", file, fileNames[i]);
+
+            try {
+                const response = await fetch(`${import.meta.env.VITE_ADMIN_BACKEND}/paquete/imagen`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`, // Utiliza el token obtenido de las cookies
+                    },
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error en la carga de la imagen');
+                }
+
+                const result = await response.json();
+                console.log('Imagen cargada con éxito, URL:', result.url);
+                // Actualizar el estado de 'imagenes' con la URL devuelta
+                setImagenes(prev => [...prev, result.url]);
+            } catch (error) {
+                console.error('Error al subir la imagen:', error);
+            }
+        }
     };
 
 

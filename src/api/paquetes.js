@@ -92,3 +92,4 @@ export const eliminarPaquete = async (token, paqueteId) => {
         throw error;
     }
 };
+
