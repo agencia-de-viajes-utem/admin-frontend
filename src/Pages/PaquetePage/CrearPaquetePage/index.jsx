@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import PaqueteForm from '../../../Components/Paquete/PaqueteForm';
+import PaqueteForm from '../../../Components/Paquete/PaqueteForm/index.jsx';
 import Cookie from 'js-cookie';
 
 import { ObtenerAeropuertos, crearPaquete, ObtenerHoteles, SubirImagenPaquete } from '../../../api/index';
@@ -66,10 +66,8 @@ const CrearPaquetePage = () => {
             </Button>
             <PaqueteForm
                 onSubmit={handleFormSubmit}
-                onImageSelect={handleImageSelect}
-                initialValues={{}}
-                aeropuertosOptions={aeropuertosOptions}
                 hoteles={hoteles}
+                aeropuertos={aeropuertosOptions}
             />
         </Container>
     );

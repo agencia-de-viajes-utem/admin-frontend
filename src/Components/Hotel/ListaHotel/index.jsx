@@ -1,11 +1,10 @@
 import React from 'react';
 import { FaHotel } from 'react-icons/fa';
 
-const HotelList = ({ hoteles, onHotelClick }) => {
+const HotelList = ({ hoteles, onHotelClick, className }) => {
     return (
         <div>
-            <h2>Lista de Hoteles</h2>
-            <div className="d-flex flex-wrap">
+            <div className={`hotel-grid ${className}`}>
                 {hoteles.map((hotel) => (
                     <div
                         key={hotel.ID}

@@ -20,3 +20,16 @@
     /* Sombra azul claro */
     /* Otros estilos si son necesarios */
 }
+
+.hotel-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* 4 columnas con igual ancho */
+    gap: 20px;
+    /* Espacio entre elementos */
+}
+
+.form-hoteles {
+    max-height: 400px;
+    overflow: auto;
+}

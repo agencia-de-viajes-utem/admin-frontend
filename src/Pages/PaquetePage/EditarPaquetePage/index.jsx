@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Button, Alert } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
-import PaqueteForm from '../../../Components/Paquete/PaqueteForm';
+import PaqueteForm from '../../../Components/Paquete/PaqueteForm/old';
 import Cookie from 'js-cookie';
 
 import { ObtenerAeropuertos, actualizarPaquete, ObtenerHoteles, SubirImagenPaquete, ObtenerPaquetePorID, eliminarRelacionesPaquete } from '../../../api/index';

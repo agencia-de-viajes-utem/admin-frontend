@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
 
 const ListaHabitaciones = ({ habitaciones, handleHabitacionClick, habitacionesSeleccionadas = [] }) => {
@@ -7,9 +7,19 @@ const ListaHabitaciones = ({ habitaciones, handleHabitacionClick, habitacionesSe
         return habitacionesSeleccionadas.some(h => h.ID === habitacionID);
     };
 
+    const [exists, setExists] = useState(false);
+
+    useEffect(() => {
+        if (habitaciones != null) {
+            setExists(true);
+        }
+    },
+        [habitaciones]);
+
+    if (!exists) return (<div className=''>No hay habitaciones</div>);
+
     return (
         <div>
-            <h3>Habitaciones:</h3>
             <Row>
                 {habitaciones.map((habitacion) => (
                     <Col key={habitacion.ID} xs={12} sm={6} md={4} lg={3}>
