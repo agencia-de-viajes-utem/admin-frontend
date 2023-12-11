@@ -35,7 +35,6 @@ const PaqueteTable = ({ paquetes, onEdit, onDelete, loading }) => {
         </Modal>
     );
 
-
     return (
         <Card className="shadow-sm p-3 mb-5 bg-white rounded">
             {deleteModal}
@@ -62,6 +61,7 @@ const PaqueteTable = ({ paquetes, onEdit, onDelete, loading }) => {
                                 <th>Hotel</th>
                                 <th> Habitaciones </th>
                                 <th> Capacidad Total</th>
+                                <th> Aerolinea </th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -114,6 +114,7 @@ const PaqueteTable = ({ paquetes, onEdit, onDelete, loading }) => {
                                             paquete.Habitaciones.reduce((total, habitacion) => total + habitacion.TipoHabitacion.Capacidad, 0) :
                                             0}
                                     </td>
+                                    <td>{paquete.Aerolinea.Nombre}</td>
                                     <td>
                                         <div className="d-flex gap-2">
                                             <Button variant="info" onClick={() => onEdit(paquete)}>

@@ -31,6 +31,7 @@ const PaqueteForm1 = ({ aerolineas, onImageSelect, onSubmit, initialValues, aero
     const [imagenes, setImagenes] = useState([]);
     const [aeropuertoOrigen, setAeropuertoOrigen] = useState('');
     const [aeropuertoDestino, setAeropuertoDestino] = useState('');
+    const [IDAerolinea, setIDAerolinea] = useState(0);
 
     // Estado para los modales
     const [showModal, setShowModal] = useState(false);
@@ -46,6 +47,7 @@ const PaqueteForm1 = ({ aerolineas, onImageSelect, onSubmit, initialValues, aero
             setDescripcion(initialValues.Descripcion || '');
             setPrecioNormal(initialValues.PrecioNormal || 0);
             setHabitacionesSeleccionadas(initialValues.Habitaciones || []);
+            setIDAerolinea(initialValues.IDAerolinea || 0);
 
             // Inicializar imagenes
             setImagenes(initialValues.Imagenes.map(imagen => ({
@@ -72,6 +74,16 @@ const PaqueteForm1 = ({ aerolineas, onImageSelect, onSubmit, initialValues, aero
         const updatedImages = [...imagenes];
         updatedImages.splice(index, 1);
         setImagenes(updatedImages);
+    };
+
+    const handleAirportChange = (field, value) => {
+        switch (field) {
+            case "IDAerolinea":
+                setIDAerolinea(value);
+                break;
+            default:
+                break;
+        }
     };
 
     const handleClickHabitaciones = (habitaciones) => {
@@ -274,7 +286,7 @@ const PaqueteForm1 = ({ aerolineas, onImageSelect, onSubmit, initialValues, aero
                         <Form.Label>Aerolínea</Form.Label>
                         <AerolineaSelect
                             aerolineas={aerolineas}
-                            value={""}
+                            value={IDAerolinea || ""}
                             onChange={(value) => handleAirportChange("IDAerolinea", value)}
                         />
                     </Form.Group>
