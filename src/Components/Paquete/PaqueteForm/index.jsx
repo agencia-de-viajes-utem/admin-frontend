@@ -1,7 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { Form, Card, Button } from "react-bootstrap";
+import Select from "react-select";
 
 import HotelSelector from "./HotelSelector";
+
+// Genera un nombre de archivo personalizado basado en los requisitos mencionados
+const generateCustomFileName = (file) => {
+    const extension = file.name.split(".").pop();
+    const date = new Date().toISOString().slice(0, 19).replace(/[^0-9]/g, "");
+    const randomString = Math.random().toString(36).substring(2, 8);
+
+    return `imagen_${randomString}_${date}.${extension}`;
+};
+
+const AirportSelect = ({ aeropuertos, value, onChange }) => {
+    const options = aeropuertos.map((aeropuerto) => ({
+        value: aeropuerto.ID,
+        label: aeropuerto.Nombre,
+    }));
+
+    return (
+        <Select
+            name="IDAeropuerto"
+            value={options.find((option) => option.value === value) || ""}
+            onChange={(selectedOption) => onChange(selectedOption ? selectedOption.value : "")}
+            options={options}
+            placeholder="Seleccionar Aeropuerto"
+            isClearable
+        />
+    );
+};
+
+
 
 const PaqueteForm = ({
     initialValues,
@@ -11,41 +41,80 @@ const PaqueteForm = ({
     isEdit = false,
 }) => {
     const [values, setValues] = useState(initialValues || {});
-    // initialValues tiene:
-    // ID, Nombre, Descripción, PrecioNormal,
-    // HabitacionesIDs[string], Imágenes[string],
-    // IDAeropuertoOrigen, IDAeropuertoDestino,
+    const [habitacionIDs, setHabitacionIDs] = useState([]);
+
+    const [imageFiles, setImageFiles] = useState([]); // Array de archivos de imagen
+
+    const [selectedImages, setSelectedImages] = useState([]); // Array de imágenes previsualizadas
+
+    const images = selectedImages.map((selectedImage, index) => ({
+        name: generateCustomFileName(imageFiles[index]),
+        file: imageFiles[index],
+        preview: selectedImage,
+    }));
+
 
     useEffect(() => {
         setValues(initialValues || {});
     }, [initialValues]);
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setValues({ ...values, [name]: value });
+    };
+
+    const handleAirportChange = (name, value) => {
+        setValues({ ...values, [name]: value });
+    };
+
+    const handleHabitacionIDsChange = (habitacionIDs) => {
+        setHabitacionIDs(habitacionIDs);
+    };
+
+    const handleImageChange = (event) => {
+        if (event.target.files) {
+            const filesArray = Array.from(event.target.files);
+
+            // Filtrar imágenes duplicadas
+            const newFilesArray = filesArray.filter(file =>
+                !imageFiles.some(existingFile => existingFile.name === file.name)
+            );
+            const newSelectedImages = newFilesArray.map(file => URL.createObjectURL(file));
+
+            setSelectedImages([...selectedImages, ...newSelectedImages]);
+            setImageFiles([...imageFiles, ...newFilesArray]);
+        }
+    };
+
+
+
     const handleRemoveImage = (index) => {
-        const updatedImages = [...imagenes];
+        // Remove the image at the specified index
+        const updatedImages = [...images];
         updatedImages.splice(index, 1);
-        setImagenes(updatedImages);
+        setImages(updatedImages);
     };
 
-    const handleClickHabitaciones = (habitaciones) => {
-        setHabitacionesSeleccionadas(habitaciones);
-    };
 
-    const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-    const handleOpenConfirmModal = () => setShowConfirmModal(true);
-    const handleCloseConfirmModal = () => setShowConfirmModal(false);
 
-    const handleConfirmClearSelection = () => {
-        setHabitacionesSeleccionadas([]);
-        handleCloseConfirmModal();
-    };
-
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSubmit(values);
-    };
 
-    console.log()
+        // Construir un array de FormData con las imágenes y otros datos
+        const formDataArray = images.map((image) => {
+            const formData = new FormData();
+            formData.append("file", image.file, image.name); // Utiliza el nombre personalizado
+            return formData;
+        });
+
+        // Ejecutar la función onSubmit con los datos
+        onSubmit({
+            ...values,
+            HabitacionIDs: habitacionIDs,
+            ImagesFormData: formDataArray, // Envía el array de FormData
+        });
+    };
 
     return (
         <Card>
@@ -86,62 +155,47 @@ const PaqueteForm = ({
                             onChange={handleChange}
                         />
                     </Form.Group>
-                    <Form.Group controlId="formBasicHabitacionesIDs">
-                        <Form.Label>Habitaciones</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Habitaciones"
-                            name="HabitacionesIDs"
-                            value={values.HabitacionesIDs || ""}
-                            onChange={handleChange}
-                        />
-                    </Form.Group>
                     <Form.Group controlId="formBasicImagenes">
                         <Form.Label>Imágenes</Form.Label>
                         <Form.Control
-                            type="text"
-                            placeholder="Imágenes"
-                            name="Imagenes"
-                            value={values.Imagenes || ""}
-                            onChange={handleChange}
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleImageChange}
                         />
+                        <div className="image-preview-container">
+                            {images.length > 0 ? images.map((image, index) => (
+                                <div key={index} className="image-preview-wrapper card">
+                                    <img src={image.preview} alt={`Previsualización ${index}`} className="image-preview card-img-top" />
+                                    <button type="button" className="btn btn-danger image-remove-button" onClick={() => handleRemoveImage(index)}>
+                                        Eliminar
+                                    </button>
+                                </div>
+                            )) : <p>No hay imágenes seleccionadas.</p>}
+                        </div>
                     </Form.Group>
+
                     <Form.Group controlId="formBasicIDAeropuertoOrigen">
                         <Form.Label>Aeropuerto Origen</Form.Label>
-                        <Form.Control
-                            as="select"
-                            name="IDAeropuertoOrigen"
+                        <AirportSelect
+                            aeropuertos={aeropuertos}
                             value={values.IDAeropuertoOrigen || ""}
-                            onChange={handleChange}
-                        >
-                            <option value="">Seleccionar Aeropuerto</option>
-                            {aeropuertos.map((aeropuerto) => (
-                                <option key={aeropuerto.ID} value={aeropuerto.ID}>
-                                    {aeropuerto.Nombre}
-                                </option>
-                            ))}
-                        </Form.Control>
+                            onChange={(value) => handleAirportChange("IDAeropuertoOrigen", value)}
+                        />
                     </Form.Group>
                     <Form.Group controlId="formBasicIDAeropuertoDestino">
                         <Form.Label>Aeropuerto Destino</Form.Label>
-                        <Form.Control
-                            as="select"
-                            name="IDAeropuertoDestino"
+                        <AirportSelect
+                            aeropuertos={aeropuertos}
                             value={values.IDAeropuertoDestino || ""}
-                            onChange={handleChange}
-                        >
-                            <option value="">Seleccionar Aeropuerto</option>
-                            {aeropuertos.map((aeropuerto) => (
-                                <option key={aeropuerto.ID} value={aeropuerto.ID}>
-                                    {aeropuerto.Nombre}
-                                </option>
-                            ))}
-                        </Form.Control>
+                            onChange={(value) => handleAirportChange("IDAeropuertoDestino", value)}
+                        />
                     </Form.Group>
                     <Form.Group controlId="formBasicIDHotel">
                         <HotelSelector
                             hoteles={hoteles}
                             onHotelSelect={(hotel) => setValues({ ...values, IDHotel: hotel.ID })}
+                            onHabitacionIDsChange={handleHabitacionIDsChange} // Pasa la función para manejar HabitacionIDs
                         />
                     </Form.Group>
 

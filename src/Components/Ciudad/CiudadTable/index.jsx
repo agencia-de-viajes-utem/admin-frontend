@@ -52,7 +52,7 @@ const CiudadTable = ({ ciudades, onEdit, onDelete, onAdd, loading }) => {
                             <tr>
                                 <th>ID</th>
                                 <th>Nombre</th>
-                                {/* Otras columnas de la tabla de ciudades */}
+                                <th>País</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -61,7 +61,7 @@ const CiudadTable = ({ ciudades, onEdit, onDelete, onAdd, loading }) => {
                                 <tr key={ciudad.ID}>
                                     <td>{ciudad.ID}</td>
                                     <td>{ciudad.Nombre}</td>
-                                    {/* Otras celdas de la tabla de ciudades */}
+                                    <td>{ciudad.Pais.Nombre}</td>
                                     <td>
                                         <div className="d-flex gap-2">
                                             <Button variant="info" onClick={() => onEdit(ciudad)}>
@@ -70,6 +70,7 @@ const CiudadTable = ({ ciudades, onEdit, onDelete, onAdd, loading }) => {
                                             <Button variant="danger" onClick={() => handleDeleteClick(ciudad)} className="ml-2">
                                                 <FiTrash2 />
                                             </Button>
+
                                         </div>
                                     </td>
                                 </tr>

@@ -53,7 +53,8 @@ const HotelTable = ({ hoteles, onEdit, onDelete, onAdd, loading }) => {
                                 <th>ID</th>
                                 <th>Nombre</th>
                                 <th>Dirección</th>
-                                {/* Otras columnas de la tabla de hoteles */}
+                                <th>Ciudad</th>
+                                <th>País</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -63,7 +64,8 @@ const HotelTable = ({ hoteles, onEdit, onDelete, onAdd, loading }) => {
                                     <td>{hotel.ID}</td>
                                     <td>{hotel.Nombre}</td>
                                     <td>{hotel.Direccion}</td>
-                                    {/* Otras celdas de la tabla de hoteles */}
+                                    <td>{hotel.Ciudad.Nombre}</td>
+                                    <td>{hotel.Ciudad.Pais.Nombre}</td>
                                     <td>
                                         <div className="d-flex gap-2">
                                             <Button variant="info" onClick={() => onEdit(hotel)}>

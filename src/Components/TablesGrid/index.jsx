@@ -16,9 +16,13 @@ const TablesGrid = () => {
                                 {table.Tabla}
                             </Button>
                         </Link>
+
                     </div>
                 ))}
             </div>
+            <Button variant='outline-primary'>
+                <a href='/inject'> SUBIR MASIVOS </a>
+            </Button>
         </div>
     );
 };

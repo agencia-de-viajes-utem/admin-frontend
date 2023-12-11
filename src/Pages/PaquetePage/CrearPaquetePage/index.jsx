@@ -13,21 +13,20 @@ const CrearPaquetePage = () => {
 
     const [aeropuertosOptions, setAeropuertosOptions] = useState([]);
     const [hoteles, setHoteles] = useState([]);
-    const [selectedImages, setSelectedImages] = useState([]);
+    const [habitaciones, setHabitaciones] = useState([]);
 
     useEffect(() => {
         ObtenerAeropuertos().then(setAeropuertosOptions).catch(console.error);
         ObtenerHoteles().then(setHoteles).catch(console.error);
     }, []);
 
-    const handleSubirImagenes = async (imagenesArray) => {
+
+    const handleSubirImagenes = async (formDatas) => {
         const imagenesSubidas = [];
-        for (const imagen of imagenesArray) {
-            const formData = new FormData();
-            formData.append('file', imagen, imagen.name);
+        for (const formData of formDatas) {
             try {
                 const res = await SubirImagenPaquete(token, formData);
-                imagenesSubidas.push(res.url); // Suponiendo que res.url contiene la URL de la imagen subida
+                imagenesSubidas.push(res.url);
             } catch (err) {
                 console.error('Error al subir imagen:', err);
             }
@@ -35,27 +34,23 @@ const CrearPaquetePage = () => {
         return imagenesSubidas;
     };
 
-    const handleImageSelect = (imagenes) => {
-        setSelectedImages(imagenes);
-    };
-
     const handleFormSubmit = async (formData) => {
-        const imagenesSubidas = await handleSubirImagenes(selectedImages);
+        const imagenesFinales = await handleSubirImagenes(formData.ImagesFormData);
+
         const newFormData = {
             Nombre: formData.Nombre,
             Descripcion: formData.Descripcion,
-            PrecioNormal: formData.PrecioNormal,
-            Imagenes: imagenesSubidas,
+            PrecioNormal: parseFloat(formData.PrecioNormal),
+            Imagenes: imagenesFinales,
             IDAeropuertoOrigen: formData.IDAeropuertoOrigen,
             IDAeropuertoDestino: formData.IDAeropuertoDestino,
-            HabitacionIDs: formData.Habitaciones
+            HabitacionIDs: formData.HabitacionIDs,
         };
-
         try {
             await crearPaquete(token, newFormData);
             navigate('/paquetes');
         } catch (err) {
-            console.error('Error al crear el paquete:', err);
+            console.error(err);
         }
     };
 
@@ -68,6 +63,7 @@ const CrearPaquetePage = () => {
                 onSubmit={handleFormSubmit}
                 hoteles={hoteles}
                 aeropuertos={aeropuertosOptions}
+
             />
         </Container>
     );

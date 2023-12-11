@@ -67,7 +67,7 @@ const ModalHotelList = ({
     );
 };
 
-const HotelSelector = ({ hoteles }) => {
+const HotelSelector = ({ hoteles, onHotelSelect, onHabitacionIDsChange }) => {
     const [token] = useState(Cookies.get('token'));
     const [showModal, setShowModal] = useState(false);
     const [currentHotel, setCurrentHotel] = useState(null);
@@ -99,16 +99,20 @@ const HotelSelector = ({ hoteles }) => {
 
     const handleHabitacionClick = (habitacion) => {
         if (!habitacion.Ocupada) {
-            const index = habitacionesSeleccionadas.findIndex((h) => h.ID === habitacion.ID);
+            const index = habitacionesSeleccionadas.indexOf(habitacion.ID);
             if (index === -1) {
-                setHabitacionesSeleccionadas([...habitacionesSeleccionadas, habitacion]);
+                setHabitacionesSeleccionadas([...habitacionesSeleccionadas, habitacion.ID]);
             } else {
                 const newHabitacionesSeleccionadas = [...habitacionesSeleccionadas];
                 newHabitacionesSeleccionadas.splice(index, 1);
                 setHabitacionesSeleccionadas(newHabitacionesSeleccionadas);
             }
+
+            // Llama a la función onHabitacionIDsChange con la lista actualizada de IDs
+            onHabitacionIDsChange(habitacionesSeleccionadas);
         }
     };
+
 
     const handleShowModal = () => {
         setShowModal(true);
@@ -143,13 +147,10 @@ const HotelSelector = ({ hoteles }) => {
                 <span>Habitaciones</span>
                 {habitacionesSeleccionadas.length > 0 ? (
                     <div className="d-flex">
-                        {habitacionesSeleccionadas.map((habitacion) => (
-                            <div key={habitacion.ID} className='card m-2'>
+                        {habitacionesSeleccionadas.map((habitacionID) => (
+                            <div key={habitacionID} className='card m-2'>
                                 <div className='card-body'>
-                                    <h5 className='card-title'>{habitacion.Nombre}</h5>
-                                    <p className='card-text'>
-                                        <strong>ID:</strong> {habitacion.ID}
-                                    </p>
+                                    <h5 className='card-title'>Habitación ID: {habitacionID}</h5>
                                 </div>
                             </div>
                         ))}

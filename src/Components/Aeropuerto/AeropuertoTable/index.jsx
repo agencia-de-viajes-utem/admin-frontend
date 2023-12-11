@@ -52,7 +52,9 @@ const AeropuertoTable = ({ aeropuertos, onEdit, onDelete, onAdd, loading }) => {
                             <tr>
                                 <th>ID</th>
                                 <th>Nombre</th>
-                                {/* Otras columnas de la tabla de aeropuertos */}
+                                <th>Ciudad</th>
+                                <th>Pais</th>
+                                {/* <th>Aerolineas</th> */}
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -61,7 +63,9 @@ const AeropuertoTable = ({ aeropuertos, onEdit, onDelete, onAdd, loading }) => {
                                 <tr key={aeropuerto.ID}>
                                     <td>{aeropuerto.ID}</td>
                                     <td>{aeropuerto.Nombre}</td>
-                                    {/* Otras celdas de la tabla de aeropuertos */}
+                                    <td>{aeropuerto.Ciudad.Nombre}</td>
+                                    <td>{aeropuerto.Ciudad.Pais.Nombre}</td>
+                                    {/* <td>{aeropuerto.Aerolineas.map((aerolinea) => aerolinea.Nombre).join(', ')}</td> */}
                                     <td>
                                         <div className="d-flex gap-2">
                                             <Button variant="info" onClick={() => onEdit(aeropuerto)}>

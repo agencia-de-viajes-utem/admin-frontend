@@ -19,6 +19,9 @@ import FechaPaquetePage from './Pages/FechaPaquetePage';
 
 
 import UserProfilePage from './Pages/UserProfilePage';
+
+import MasivosPage from './Pages/MasivosPage';
+
 import withAuth from './Components/withAuth'; // Importa el componente de envoltura
 
 const loginURL = import.meta.env.VITE_FRONT_USUARIOS;
@@ -36,6 +39,8 @@ const AuthenticatedHabitacionCrearPage = withAuth(HabitacionCrearPage, loginURL)
 const AuthenticatedPaquetePage = withAuth(PaquetePage, loginURL);
 const AuthenticatedCrearPaquetePage = withAuth(CrearPaquetePage, loginURL);
 const AuthenticatedEditarPaquetePage = withAuth(EditarPaquetePage, loginURL);
+
+const AuthenticatedMasivosPage = withAuth(MasivosPage, loginURL);
 
 const AuthenticatedFechaPaquetePage = withAuth(FechaPaquetePage, loginURL)
 //const AuthenticatedPaqueteDetallePage = withAuth(PaqueteDetallePage, loginURL);
@@ -62,6 +67,8 @@ const App = () => {
         <Route path="/paquetes/crear" element={<AuthenticatedCrearPaquetePage />} />
         <Route path="/paquetes/:paqueteId" element={<AuthenticatedEditarPaquetePage />} />
         <Route path="/fechas_paquete" element={<AuthenticatedFechaPaquetePage />} />
+
+        <Route path="/inject" element={<AuthenticatedMasivosPage />} />
 
 
 

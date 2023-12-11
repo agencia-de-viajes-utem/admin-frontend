@@ -33,3 +33,9 @@
     max-height: 400px;
     overflow: auto;
 }
+
+.miform {
+    color: blue !important;
+    outline: #0d6efd 1px solid;
+    border-radius: 3px;
+}

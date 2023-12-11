@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Card } from 'react-bootstrap';
 import Select from 'react-select';
 
-
 const AerolineaModal = ({ show, onHide, aerolinea, onSave, allAeropuertos }) => {
     const [nombre, setNombre] = useState('');
     const [selectedAeropuertos, setSelectedAeropuertos] = useState([]);
@@ -21,6 +20,11 @@ const AerolineaModal = ({ show, onHide, aerolinea, onSave, allAeropuertos }) => 
         setSelectedAeropuertos(selectedOptions);
     };
 
+    const handleSelectAll = () => {
+        const allAeropuertosOptions = allAeropuertos.map(aero => ({ value: aero.ID, label: aero.Nombre }));
+        setSelectedAeropuertos(allAeropuertosOptions);
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         onSave({
@@ -29,6 +33,11 @@ const AerolineaModal = ({ show, onHide, aerolinea, onSave, allAeropuertos }) => 
             Aeropuertos: selectedAeropuertos.map(opt => opt.value)
         });
         onHide();
+    };
+
+    const allOption = {
+        value: 'all',
+        label: 'Seleccionar todos'
     };
 
     return (
@@ -54,8 +63,12 @@ const AerolineaModal = ({ show, onHide, aerolinea, onSave, allAeropuertos }) => 
                                 isMulti
                                 value={selectedAeropuertos}
                                 onChange={handleAeropuertoChange}
-                                options={allAeropuertos.map(aero => ({ value: aero.ID, label: aero.Nombre }))}
+                                options={[allOption, ...allAeropuertos.map(aero => ({ value: aero.ID, label: aero.Nombre }))]}
+                                isSearchable={true} // Habilitar la búsqueda
                             />
+                            <Button variant="link" onClick={handleSelectAll}>
+                                Seleccionar todos
+                            </Button>
                         </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
@@ -65,7 +78,9 @@ const AerolineaModal = ({ show, onHide, aerolinea, onSave, allAeropuertos }) => 
                 </Form>
             </Card>
         </Modal>
+
     );
+
 };
 
 export default AerolineaModal;
