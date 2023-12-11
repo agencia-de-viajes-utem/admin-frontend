@@ -3,9 +3,27 @@ import { Button, Form, Card, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 
 import CargarImagenesModal from '../../CargarImagenesModal';
-import SeleccionarHabitacionByHotel from '../SeleccionarHabitacionByHotel';
+import SeleccionarHabitacionByHotel from '../SeleccionarHabitacionBy';
 
-const PaqueteForm1 = ({ onImageSelect, onSubmit, initialValues, aeropuertosOptions, hoteles, isEdit = false }) => {
+const AerolineaSelect = ({ aerolineas, value, onChange }) => {
+    const options = aerolineas.map((aerolinea) => ({
+        value: aerolinea.ID,
+        label: aerolinea.Nombre,
+    }));
+
+    return (
+        <Select
+            name="IDAerolinea"
+            value={options.find((option) => option.value === value) || ""}
+            onChange={(selectedOption) => onChange(selectedOption ? selectedOption.value : "")}
+            options={options}
+            placeholder="Seleccionar Aerolínea"
+            isClearable
+        />
+    );
+};
+
+const PaqueteForm1 = ({ aerolineas, onImageSelect, onSubmit, initialValues, aeropuertosOptions, hoteles, isEdit = false }) => {
     // Estado para los campos del formulario
     const [nombre, setNombre] = useState('');
     const [descripcion, setDescripcion] = useState('');
@@ -248,6 +266,16 @@ const PaqueteForm1 = ({ onImageSelect, onSubmit, initialValues, aeropuertosOptio
                             getOptionValue={(option) => option.ID}
                             onChange={(selectedOption) => setAeropuertoDestino(selectedOption)}
                             value={aeropuertoDestino}
+                        />
+                    </Form.Group>
+
+                    {/* Campo para Aerolínea */}
+                    <Form.Group controlId="formBasicIDAerolinea">
+                        <Form.Label>Aerolínea</Form.Label>
+                        <AerolineaSelect
+                            aerolineas={aerolineas}
+                            value={""}
+                            onChange={(value) => handleAirportChange("IDAerolinea", value)}
                         />
                     </Form.Group>
                     {/* Fin para Aeropuerto Destino */}

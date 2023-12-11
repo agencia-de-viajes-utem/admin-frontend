@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import PaqueteForm from '../../../Components/Paquete/PaqueteForm/index.jsx';
 import Cookie from 'js-cookie';
 
-import { ObtenerAeropuertos, crearPaquete, ObtenerHoteles, SubirImagenPaquete } from '../../../api/index';
+import { ObtenerAeropuertos, crearPaquete, ObtenerHoteles, SubirImagenPaquete, ObtenerAerolineas } from '../../../api/index';
 
 const CrearPaquetePage = () => {
     const navigate = useNavigate();
@@ -14,11 +14,14 @@ const CrearPaquetePage = () => {
     const [aeropuertosOptions, setAeropuertosOptions] = useState([]);
     const [hoteles, setHoteles] = useState([]);
     const [habitaciones, setHabitaciones] = useState([]);
+    const [aerolineas, setAerolineas] = useState([]);
 
     useEffect(() => {
         ObtenerAeropuertos().then(setAeropuertosOptions).catch(console.error);
         ObtenerHoteles().then(setHoteles).catch(console.error);
+        ObtenerAerolineas().then(setAerolineas).catch(console.error);
     }, []);
+
 
 
     const handleSubirImagenes = async (formDatas) => {
@@ -35,23 +38,26 @@ const CrearPaquetePage = () => {
     };
 
     const handleFormSubmit = async (formData) => {
-        const imagenesFinales = await handleSubirImagenes(formData.ImagesFormData);
+        // const imagenesFinales = await handleSubirImagenes(formData.ImagesFormData);
 
         const newFormData = {
             Nombre: formData.Nombre,
             Descripcion: formData.Descripcion,
             PrecioNormal: parseFloat(formData.PrecioNormal),
-            Imagenes: imagenesFinales,
+            Imagenes: '',
             IDAeropuertoOrigen: formData.IDAeropuertoOrigen,
             IDAeropuertoDestino: formData.IDAeropuertoDestino,
             HabitacionIDs: formData.HabitacionIDs,
+            IDAerolinea: formData.IDAerolinea,
         };
-        try {
-            await crearPaquete(token, newFormData);
-            navigate('/paquetes');
-        } catch (err) {
-            console.error(err);
-        }
+
+        console.log(newFormData);
+        // try {
+        //     await crearPaquete(token, newFormData);
+        //     // navigate('/paquetes');
+        // } catch (err) {
+        //     console.error(err);
+        // }
     };
 
     return (
@@ -63,6 +69,7 @@ const CrearPaquetePage = () => {
                 onSubmit={handleFormSubmit}
                 hoteles={hoteles}
                 aeropuertos={aeropuertosOptions}
+                aerolineas={aerolineas}
 
             />
         </Container>

@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Form, Card, Button } from "react-bootstrap";
 import Select from "react-select";
 
-import HotelSelector from "./HotelSelector";
+import Cookies from "js-cookie";
+
+import { ObtenerHabitacionesHotel } from "../../../api/index";
 
 // Genera un nombre de archivo personalizado basado en los requisitos mencionados
 const generateCustomFileName = (file) => {
@@ -16,7 +18,7 @@ const generateCustomFileName = (file) => {
 const AirportSelect = ({ aeropuertos, value, onChange }) => {
     const options = aeropuertos.map((aeropuerto) => ({
         value: aeropuerto.ID,
-        label: aeropuerto.Nombre,
+        label: aeropuerto.Nombre + ', ' + aeropuerto.Ciudad.Nombre + ', ' + aeropuerto.Ciudad.Pais.Nombre,
     }));
 
     return (
@@ -31,6 +33,63 @@ const AirportSelect = ({ aeropuertos, value, onChange }) => {
     );
 };
 
+const AerolineaSelect = ({ aerolineas, value, onChange }) => {
+    const options = aerolineas.map((aerolinea) => ({
+        value: aerolinea.ID,
+        label: aerolinea.Nombre,
+    }));
+
+    return (
+        <Select
+            name="IDAerolinea"
+            value={options.find((option) => option.value === value) || ""}
+            onChange={(selectedOption) => onChange(selectedOption ? selectedOption.value : "")}
+            options={options}
+            placeholder="Seleccionar Aerolínea"
+            isClearable
+        />
+    );
+};
+
+const HotelSelect = ({ hoteles, value, onChange }) => {
+    console.log(hoteles);
+    const options = hoteles.map((hotel) => ({
+        value: hotel.ID,
+        label: hotel.Nombre + ', ' + hotel.Ciudad.Nombre + ', ' + hotel.Ciudad.Pais.Nombre,
+    }));
+
+    return (
+        <Select
+            name="HotelSelect"
+            value={options.find((option) => option.value === value) || ""}
+            onChange={(selectedOption) => onChange(selectedOption ? selectedOption.value : "")}
+            options={options}
+            placeholder="Seleccionar Hotel"
+            isClearable
+        />
+    );
+};
+
+const HabitacionesSelect = ({ habitaciones, value, onChange }) => {
+    console.log(habitaciones);
+    const options = habitaciones.map((habitacion) => ({
+        value: habitacion.ID,
+        label: habitacion.ID,
+    }));
+
+    return (
+        <Select
+            name="HabitacionesSelect"
+            value={options.find((option) => option.value === value) || ""}
+            onChange={(selectedOption) => onChange(selectedOption ? selectedOption.value : "")}
+            options={options}
+            placeholder="Seleccionar Habitaciones"
+            isClearable
+        />
+    );
+};
+
+
 
 
 const PaqueteForm = ({
@@ -39,6 +98,7 @@ const PaqueteForm = ({
     hoteles,
     aeropuertos,
     isEdit = false,
+    aerolineas,
 }) => {
     const [values, setValues] = useState(initialValues || {});
     const [habitacionIDs, setHabitacionIDs] = useState([]);
@@ -53,6 +113,11 @@ const PaqueteForm = ({
         preview: selectedImage,
     }));
 
+    const [habitaciones, setHabitaciones] = useState([]);
+
+    const token = Cookies.get("token");
+
+    const [hayHabitaciones, setHayHabitaciones] = useState(false);
 
     useEffect(() => {
         setValues(initialValues || {});
@@ -85,6 +150,18 @@ const PaqueteForm = ({
             setImageFiles([...imageFiles, ...newFilesArray]);
         }
     };
+
+    const handleHotel = (name, value) => {
+        setValues({ ...values, [name]: value });
+        setHayHabitaciones(false);
+        ObtenerHabitacionesHotel(token, value).then(setHabitaciones).catch(console.error);
+    };
+
+    useEffect(() => {
+        if (habitaciones != null) {
+            setHayHabitaciones(true);
+        }
+    }, [habitaciones]);
 
 
 
@@ -192,10 +269,31 @@ const PaqueteForm = ({
                         />
                     </Form.Group>
                     <Form.Group controlId="formBasicIDHotel">
-                        <HotelSelector
+                        <Form.Label> Hoteles </Form.Label>
+                        <HotelSelect
                             hoteles={hoteles}
-                            onHotelSelect={(hotel) => setValues({ ...values, IDHotel: hotel.ID })}
-                            onHabitacionIDsChange={handleHabitacionIDsChange} // Pasa la función para manejar HabitacionIDs
+                            value={values.IDHotel || ""}
+                            onChange={(value) => handleHotel("IDHotel", value)}
+                        />
+                    </Form.Group>
+
+                    {hayHabitaciones && (
+                        <Form.Group controlId="formBasicHabitaciones">
+                            <Form.Label>Habitaciones</Form.Label>
+                            <HabitacionesSelect
+                                habitaciones={habitaciones}
+                                value={values.HabitacionIDs || ""}
+                                onChange={handleHabitacionIDsChange}
+                            />
+                        </Form.Group>
+                    )}
+
+                    <Form.Group controlId="formBasicIDAerolinea">
+                        <Form.Label>Aerolínea</Form.Label>
+                        <AerolineaSelect
+                            aerolineas={aerolineas}
+                            value={values.IDAerolinea || ""}
+                            onChange={(value) => handleAirportChange("IDAerolinea", value)}
                         />
                     </Form.Group>
 
@@ -204,7 +302,7 @@ const PaqueteForm = ({
                     </Button>
                 </Form>
             </Card.Body>
-        </Card>
+        </Card >
     );
 };
 

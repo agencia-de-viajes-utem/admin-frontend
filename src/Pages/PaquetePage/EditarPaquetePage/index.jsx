@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Button, Alert } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
-import PaqueteForm from '../../../Components/Paquete/PaqueteForm/old';
+import PaqueteForm from '../../../Components/Paquete/PaqueteForm/old.jsx';
 import Cookie from 'js-cookie';
 
-import { ObtenerAeropuertos, actualizarPaquete, ObtenerHoteles, SubirImagenPaquete, ObtenerPaquetePorID, eliminarRelacionesPaquete } from '../../../api/index';
+import { ObtenerAeropuertos, actualizarPaquete, ObtenerHoteles, SubirImagenPaquete, ObtenerPaquetePorID, eliminarRelacionesPaquete, ObtenerAerolineas } from '../../../api/index';
 
 const EditarPaquetePage = () => {
     const navigate = useNavigate();
@@ -14,6 +14,7 @@ const EditarPaquetePage = () => {
     const [aeropuertosOptions, setAeropuertosOptions] = useState([]);
     const [hoteles, setHoteles] = useState([]);
     const [paquete, setPaquete] = useState(null);
+    const [aerolineas, setAerolineas] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
     const [error, setError] = useState('');
 
@@ -23,10 +24,12 @@ const EditarPaquetePage = () => {
                 const aeropuertos = await ObtenerAeropuertos();
                 const hoteles = await ObtenerHoteles();
                 const paquete = await ObtenerPaquetePorID(token, paqueteId);
+                const aerolineas = await ObtenerAerolineas();
 
                 setAeropuertosOptions(aeropuertos);
                 setHoteles(hoteles);
                 setPaquete(paquete);
+                setAerolineas(aerolineas);
             } catch (err) {
                 console.error(err);
                 setError('Error al cargar los datos.');
@@ -35,6 +38,7 @@ const EditarPaquetePage = () => {
 
         fetchDatos();
     }, [paqueteId, token]);
+
 
     const handleSubirImagenes = async (imagenesParaSubir) => {
         const imagenesSubidas = [];
@@ -88,12 +92,14 @@ const EditarPaquetePage = () => {
         }
     };
 
+
+
     return (
         <Container>
             <Button variant="primary" onClick={() => navigate('/paquetes')} className='my-4'>
                 Volver a la Lista de Paquetes
             </Button>
-            {paquete ? (
+            {paquete && aerolineas ? (
                 <PaqueteForm
                     onSubmit={handleFormSubmit}
                     onImageSelect={handleImageSelect}
@@ -102,6 +108,7 @@ const EditarPaquetePage = () => {
                     hoteles={hoteles}
                     isEdit={true}
                     onClearSelection={handleConfirmClearSelection}
+                    aerolineas={aerolineas}
                 />
             ) : (
                 <Alert variant="info">Cargando datos del paquete...</Alert>
