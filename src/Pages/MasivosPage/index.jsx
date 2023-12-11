@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
-import { tables, tableIcons } from '/src/mocks/tables.jsx'; // Asegúrate de tener la ruta correcta
+import { tables, tableIcons } from '../../Mocks/tables' // Asegúrate de tener la ruta correcta
 
 const tableHeaders = {
     paquetes: {
