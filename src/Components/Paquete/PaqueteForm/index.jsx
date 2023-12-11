@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Form, Card, Button } from "react-bootstrap";
+import { Form, Card, Button, Modal } from "react-bootstrap";
 import Select from "react-select";
 
 import Cookies from "js-cookie";
 
 import { ObtenerHabitacionesHotel } from "../../../api/index";
+
+import SeleccionarHabitacionByHotel from "../../Paquete/SeleccionarHabitacionBy";
 
 // Genera un nombre de archivo personalizado basado en los requisitos mencionados
 const generateCustomFileName = (file) => {
@@ -52,7 +54,6 @@ const AerolineaSelect = ({ aerolineas, value, onChange }) => {
 };
 
 const HotelSelect = ({ hoteles, value, onChange }) => {
-    console.log(hoteles);
     const options = hoteles.map((hotel) => ({
         value: hotel.ID,
         label: hotel.Nombre + ', ' + hotel.Ciudad.Nombre + ', ' + hotel.Ciudad.Pais.Nombre,
@@ -71,20 +72,26 @@ const HotelSelect = ({ hoteles, value, onChange }) => {
 };
 
 const HabitacionesSelect = ({ habitaciones, value, onChange }) => {
-    console.log(habitaciones);
+    // Crear opciones a partir de los IDs de las habitaciones
     const options = habitaciones.map((habitacion) => ({
-        value: habitacion.ID,
-        label: habitacion.ID,
+        value: habitacion.ID,  // Asegúrate de que este campo coincIDa con la estructura de tus datos
+        label: `Habitación ${habitacion.ID}`
     }));
+
+    // Transformar value (array de IDs) en un array de objetos opción
+    const selectedOptions = options.filter(option => value.includes(option.value));
 
     return (
         <Select
             name="HabitacionesSelect"
-            value={options.find((option) => option.value === value) || ""}
-            onChange={(selectedOption) => onChange(selectedOption ? selectedOption.value : "")}
+            value={selectedOptions}
+            onChange={(selectedOptions) =>
+                onChange(selectedOptions ? selectedOptions.map(option => option.value) : [])
+            }
             options={options}
             placeholder="Seleccionar Habitaciones"
             isClearable
+            isMulti // Habilitar selección múltiple
         />
     );
 };
@@ -119,6 +126,30 @@ const PaqueteForm = ({
 
     const [hayHabitaciones, setHayHabitaciones] = useState(false);
 
+    const [habitacionesSeleccionadas, setHabitacionesSeleccionadas] = useState([]);
+
+    const [showModalHabitaciones, setShowModalHabitaciones] = useState(false);
+
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+    const handleOpenConfirmModal = () => setShowConfirmModal(true);
+
+    const handleCloseConfirmModal = () => setShowConfirmModal(false);
+
+    const handleConfirmClearSelection = () => {
+        setHabitacionesSeleccionadas([]);
+        setHabitacionIDs([]);
+        setShowConfirmModal(false);
+    };
+
+    const handleClickHabitaciones = (habitaciones) => {
+        setHabitacionesSeleccionadas(habitaciones);
+        setHabitacionIDs(habitaciones.map(h => h.ID));
+        setShowModalHabitaciones(false);
+    };
+
+
+
     useEffect(() => {
         setValues(initialValues || {});
     }, [initialValues]);
@@ -132,9 +163,24 @@ const PaqueteForm = ({
         setValues({ ...values, [name]: value });
     };
 
-    const handleHabitacionIDsChange = (habitacionIDs) => {
-        setHabitacionIDs(habitacionIDs);
+    const handleHabitacionIDsChange = (event) => {
+        // Depuración: Verificar el evento y los options seleccionados
+        console.log("Evento onChange:", event);
+        const selectedOptions = event.target.selectedOptions;
+        console.log("Options seleccionados:", selectedOptions);
+
+        // Mapear a los valores y actualizar el estado
+        const selectedIDs = Array.from(selectedOptions).map(option => parseInt(option.value));
+        console.log("IDs seleccionados:", selectedIDs);
+
+        setValues(prevValues => {
+            const newValues = { ...prevValues, HabitacionIDs: selectedIDs };
+            console.log("Nuevos valores de estado:", newValues); // Depuración del nuevo estado
+            return newValues;
+        });
     };
+
+
 
     const handleImageChange = (event) => {
         if (event.target.files) {
@@ -268,25 +314,57 @@ const PaqueteForm = ({
                             onChange={(value) => handleAirportChange("IDAeropuertoDestino", value)}
                         />
                     </Form.Group>
-                    <Form.Group controlId="formBasicIDHotel">
-                        <Form.Label> Hoteles </Form.Label>
-                        <HotelSelect
-                            hoteles={hoteles}
-                            value={values.IDHotel || ""}
-                            onChange={(value) => handleHotel("IDHotel", value)}
+                    <Form.Group className="mb-3">
+                        <Form.Label>Habitaciones</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={habitacionesSeleccionadas.map(h => `${h.ID} - ${h.Nombre}`).join(', ')}
+                            readOnly // Hacer que el campo de texto sea solo lectura
+                            className="mb-3"
                         />
+                        <div className="d-flex">
+                            <Button
+                                className='flex-grow-1 me-2'
+                                variant="outline-primary"
+                                onClick={() => setShowModalHabitaciones(true)}>
+                                Seleccionar Hotel
+                            </Button>
+                            <Button
+                                variant="outline-danger"
+                                onClick={handleOpenConfirmModal}>
+                                Limpiar Selección
+                            </Button>
+                        </div>
                     </Form.Group>
+                    {/* Modal de Confirmación */}
+                    <Modal
+                        show={showConfirmModal}
+                        onHide={handleCloseConfirmModal}
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title>Confirmar Acción</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            Está seguro que desea limpiar la selección? Este es un paso que no se puede deshacer y eliminará la relación de su paquete y las habitaciones enlazadas.
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleCloseConfirmModal}>
+                                Cancelar
+                            </Button>
+                            <Button variant="danger" onClick={handleConfirmClearSelection}>
+                                Confirmar
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
 
-                    {hayHabitaciones && (
-                        <Form.Group controlId="formBasicHabitaciones">
-                            <Form.Label>Habitaciones</Form.Label>
-                            <HabitacionesSelect
-                                habitaciones={habitaciones}
-                                value={values.HabitacionIDs || ""}
-                                onChange={handleHabitacionIDsChange}
-                            />
-                        </Form.Group>
-                    )}
+                    <SeleccionarHabitacionByHotel
+                        show={showModalHabitaciones}
+                        handleClose={() => setShowModalHabitaciones(false)}
+                        onUpload={handleClickHabitaciones}
+                        hoteles={hoteles}
+                        fullscreen={true}
+                    />
+
 
                     <Form.Group controlId="formBasicIDAerolinea">
                         <Form.Label>Aerolínea</Form.Label>

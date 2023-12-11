@@ -38,13 +38,13 @@ const CrearPaquetePage = () => {
     };
 
     const handleFormSubmit = async (formData) => {
-        // const imagenesFinales = await handleSubirImagenes(formData.ImagesFormData);
+        const imagenesFinales = await handleSubirImagenes(formData.ImagesFormData);
 
         const newFormData = {
             Nombre: formData.Nombre,
             Descripcion: formData.Descripcion,
             PrecioNormal: parseFloat(formData.PrecioNormal),
-            Imagenes: '',
+            Imagenes: imagenesFinales,
             IDAeropuertoOrigen: formData.IDAeropuertoOrigen,
             IDAeropuertoDestino: formData.IDAeropuertoDestino,
             HabitacionIDs: formData.HabitacionIDs,
@@ -52,12 +52,12 @@ const CrearPaquetePage = () => {
         };
 
         console.log(newFormData);
-        // try {
-        //     await crearPaquete(token, newFormData);
-        //     // navigate('/paquetes');
-        // } catch (err) {
-        //     console.error(err);
-        // }
+        try {
+            await crearPaquete(token, newFormData);
+            navigate('/paquetes');
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (

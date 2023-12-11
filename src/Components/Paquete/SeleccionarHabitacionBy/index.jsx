@@ -8,7 +8,7 @@ import { ObtenerHabitacionesHotel } from '../../../api/index';
 
 import Cookies from 'js-cookie';
 
-const SeleccionarHabitacionByHotel = ({ hoteles, show, handleClose, onUpload }) => {
+const SeleccionarHabitacionByHotel = ({ fullscreen, hoteles, show, handleClose, onUpload }) => {
 
     const token = Cookies.get('token');
     const [showHabitaciones, setShowHabitaciones] = useState(false);
@@ -69,7 +69,7 @@ const SeleccionarHabitacionByHotel = ({ hoteles, show, handleClose, onUpload }) 
     };
 
     return (
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} fullscreen={fullscreen}>
             <Modal.Header closeButton>
                 <Modal.Title>Seleccionar Hotel y Habitaciones</Modal.Title>
             </Modal.Header>
